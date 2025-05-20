@@ -1,0 +1,44 @@
+[
+  {
+    "objectID": "posts/intro/index.html",
+    "href": "posts/intro/index.html",
+    "title": "Excited to Join GSoC 2025 with QuTiP-QOC!",
+    "section": "",
+    "text": "I am incredibly excited to announce that I have been selected for Google Summer of Code (GSoC) 2025 with the QuTiP community! This is a fantastic opportunity to deepen my understanding of quantum optimal control and contribute to a cutting-edge open-source project.\nIn this blog series, I will share my weekly progress, the challenges I face, how I overcome them, and my plans moving forward. To kick off, here is an overview of the project and its key goals."
+  },
+  {
+    "objectID": "posts/intro/index.html#project",
+    "href": "posts/intro/index.html#project",
+    "title": "Excited to Join GSoC 2025 with QuTiP-QOC!",
+    "section": "Project",
+    "text": "Project\nThe project I will be working on is titled “QuTiP-QOC: Advancing Quantum Optimal Control Algorithms”.\n\nProblem Statement\nThis project proposes the direct integration of advanced quantum optimal control algorithms—GRAPE (Gradient Ascent Pulse Engineering), CRAB (Chopped Random Basis), JOPT (Joint Optimization), and GOAT (Gradient Optimization of Analytic Controls)—into the qutip-qoc package, eliminating its current dependency on the separate qutip-qtrl library.\nBy re-implementing these algorithms in a modular, maintainable, and efficient manner—leveraging QuTiP’s core functionality—this project aims to modernize and unify the quantum control stack within QuTiP. This integration will provide a streamlined, flexible foundation that supports state-of-the-art optimization methods and improved numerical performance.\nMoreover, this work sets the stage for replacing dependencies in related projects such as qutip-qip, moving from qutip-qtrl to qutip-qoc. This transition will enable greater flexibility and the adoption of more advanced and varied optimization techniques for precise quantum circuit control and manipulation.\nObjectives\n\nIntegrate a standalone FidelityComputer system to replace legacy fidelity computation methods, improving modularity and maintainability.\n\nSupport multiple fidelity types including PSU, SU, and TRACEDIFF, and handle both state and process fidelities.\n\nAchieve compatibility with JAX to enable accelerated numerical computation and differentiation.\n\nRefactor existing optimization algorithms (e.g., GRAPE, CRAB) to utilize the new fidelity system for improved performance and flexibility.\n\nEnsure numerical consistency with the legacy fidelity module and maintain backward compatibility.\n\nActively work to resolve currently failing test cases related to state-to-state and parameterized optimizations.\n\nDocument the new fidelity system thoroughly and provide example notebooks to help users adopt the improved framework.\n\nMentors\n\nAlex Pitchford\n\nBoxi Li"
+  },
+  {
+    "objectID": "posts/intro/index.html#why-this-project-matters",
+    "href": "posts/intro/index.html#why-this-project-matters",
+    "title": "Excited to Join GSoC 2025 with QuTiP-QOC!",
+    "section": "Why this project matters?",
+    "text": "Why this project matters?\nQuantum optimal control plays a critical role in manipulating quantum systems with high precision, which is essential for quantum computing, sensing, and communication technologies. By improving QuTiP-QOC’s algorithms and modularizing fidelity computations, this project will help researchers and developers design and analyze quantum control sequences more efficiently.\nThe enhanced fidelity system will provide a flexible, maintainable foundation for future algorithm development and integration with high-performance computing tools. Ultimately, this project will contribute to accelerating advancements in quantum computing by enabling more precise and accessible quantum control solutions.\n\nStay tuned for weekly updates on my journey through this exciting project. I look forward to sharing what I learn and build over the summer!"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "GSOC25-QUTIP-QOC-JOURNEY",
+    "section": "",
+    "text": "Community Bonding and Initial Contributions\n\n\n\n\n\n\n\n\nMay 16, 2025\n\n\nAkhil Pratap Singh\n\n\n\n\n\n\n\n\n\n\n\n\nExcited to Join GSoC 2025 with QuTiP-QOC!\n\n\n\n\n\n\n\n\nMay 9, 2025\n\n\nAkhil Pratap Singh\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "Akhil Pratap Singh",
+    "section": "",
+    "text": "Know more about me, [here]"
+  },
+  {
+    "objectID": "posts/community-bond/index.html",
+    "href": "posts/community-bond/index.html",
+    "title": "Community Bonding and Initial Contributions",
+    "section": "",
+    "text": "What did I do this week?\nThis week, I focused on immersing myself deeply into the QuTiP-QOC codebase to understand the architecture and workflows, especially around the fidelity calculation system which is critical for quantum optimal control algorithms. I carefully read through the documentation and explored the repository, including related issues and pull requests, to grasp how different modules interact.\nA major highlight was working on Issue #10, where I contributed a Pull Request to integrate a new FidelityComputer system that replaces the old qutip_qtrl.fid_computer dependency. This new system introduces support for PSU, SU, and trace difference fidelity types, adds state and process fidelity calculations, and ensures compatibility with JAX for automatic differentiation.\nWhile the PR is a work-in-progress with three failing test cases (state-to-state GRAPE and CRAB optimizations, and parameterized CRAB), the rest of the tests show numerical consistency and improved fidelity handling. This refactoring will help make the optimization algorithms more robust and maintainable.\nAdditionally, I set up my development environment, ran existing test suites, and planned how to address the failing tests in the upcoming weeks. I also connected with my mentors and the QuTiP-QOC community, which has been encouraging and insightful.\n\n\nPlan for next week?\nMy next goal is to fix the failing test cases related to state-to-state optimizations and parameterized CRAB algorithms. I will continue enhancing the fidelity module and work on expanding the test coverage to ensure the new system fully replaces the legacy one without regression.\n\nLooking forward to making steady progress and sharing updates as I dive deeper into quantum optimal control!"
+  }
+]
