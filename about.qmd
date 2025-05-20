@@ -1,0 +1,16 @@
+---
+title: "Akhil Pratap Singh"
+image: profile.jpg
+about:
+  template: jolla
+  links:
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/akhil-pratap-singh-302556240/
+    - icon: github
+      text: Github
+      href: https://github.com/Akhils777/
+
+---
+
+Know more about me, [here]

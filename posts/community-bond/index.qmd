@@ -1,0 +1,26 @@
+---
+title: "Community Bonding and Initial Contributions"
+author: "Akhil Pratap Singh"
+date: "2025-05-16"
+categories: [gsoc, qutip-qoc]
+image: "community-bond.jpg"
+---
+
+# What did I do this week?
+
+This week, I focused on immersing myself deeply into the QuTiP-QOC codebase to understand the architecture and workflows, especially around the fidelity calculation system which is critical for quantum optimal control algorithms. I carefully read through the documentation and explored the repository, including related issues and pull requests, to grasp how different modules interact.
+
+A major highlight was working on [Issue #10](https://github.com/qutip/qutip-qoc/issues/10), where I contributed a Pull Request to integrate a new `FidelityComputer` system that replaces the old `qutip_qtrl.fid_computer` dependency. This new system introduces support for PSU, SU, and trace difference fidelity types, adds state and process fidelity calculations, and ensures compatibility with JAX for automatic differentiation.
+
+While the PR is a work-in-progress with three failing test cases (state-to-state GRAPE and CRAB optimizations, and parameterized CRAB), the rest of the tests show numerical consistency and improved fidelity handling. This refactoring will help make the optimization algorithms more robust and maintainable.
+
+Additionally, I set up my development environment, ran existing test suites, and planned how to address the failing tests in the upcoming weeks. I also connected with my mentors and the QuTiP-QOC community, which has been encouraging and insightful.
+
+# Plan for next week?
+
+My next goal is to fix the failing test cases related to state-to-state optimizations and parameterized CRAB algorithms. I will continue enhancing the fidelity module and work on expanding the test coverage to ensure the new system fully replaces the legacy one without regression.
+
+
+---
+
+Looking forward to making steady progress and sharing updates as I dive deeper into quantum optimal control!

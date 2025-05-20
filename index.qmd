@@ -1,0 +1,19 @@
+---
+title: "GSOC25-QUTIP-QOC-JOURNEY"
+listing:
+  contents:
+    - "posts/*/*.qmd"
+  sort: "date desc"
+  type: default
+  categories: false
+  sort-ui: false
+  filter-ui: false
+page-layout: article
+title-block-banner: true
+---
+
+<style>
+.quarto-title .title {
+  text-align: center;
+}
+</style>

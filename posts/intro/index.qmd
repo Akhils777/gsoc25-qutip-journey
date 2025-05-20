@@ -1,0 +1,47 @@
+---
+title: "Excited to Join GSoC 2025 with QuTiP-QOC!"
+author: "Akhil Pratap Singh"
+date: "2025-05-09"
+categories: [gsoc, qutip-qoc]
+image: "thumb.jpg"
+---
+
+![](./thumb.jpg)
+
+I am incredibly excited to announce that I have been selected for Google Summer of Code (GSoC) 2025 with the QuTiP community! This is a fantastic opportunity to deepen my understanding of quantum optimal control and contribute to a cutting-edge open-source project.
+
+In this blog series, I will share my weekly progress, the challenges I face, how I overcome them, and my plans moving forward. To kick off, here is an overview of the project and its key goals.
+
+## Project
+
+The project I will be working on is titled **"QuTiP-QOC: Advancing Quantum Optimal Control Algorithms"**.
+
+- **Problem Statement**  
+  This project proposes the direct integration of advanced quantum optimal control algorithms—GRAPE (Gradient Ascent Pulse Engineering), CRAB (Chopped Random Basis), JOPT (Joint Optimization), and GOAT (Gradient Optimization of Analytic Controls)—into the qutip-qoc package, eliminating its current dependency on the separate qutip-qtrl library.
+
+  By re-implementing these algorithms in a modular, maintainable, and efficient manner—leveraging QuTiP's core functionality—this project aims to modernize and unify the quantum control stack within QuTiP. This integration will provide a streamlined, flexible foundation that supports state-of-the-art optimization methods and improved numerical performance.
+
+  Moreover, this work sets the stage for replacing dependencies in related projects such as qutip-qip, moving from qutip-qtrl to qutip-qoc. This transition will enable greater flexibility and the adoption of more advanced and varied optimization techniques for precise quantum circuit control and manipulation.
+
+- **Objectives**  
+  - Integrate a standalone FidelityComputer system to replace legacy fidelity computation methods, improving modularity and maintainability.  
+  - Support multiple fidelity types including PSU, SU, and TRACEDIFF, and handle both state and process fidelities.  
+  - Achieve compatibility with JAX to enable accelerated numerical computation and differentiation.  
+  - Refactor existing optimization algorithms (e.g., GRAPE, CRAB) to utilize the new fidelity system for improved performance and flexibility.  
+  - Ensure numerical consistency with the legacy fidelity module and maintain backward compatibility.  
+  - Actively work to resolve currently failing test cases related to state-to-state and parameterized optimizations.  
+  - Document the new fidelity system thoroughly and provide example notebooks to help users adopt the improved framework.
+
+- **Mentors**  
+  - Alex Pitchford  
+  - Boxi Li
+
+## Why this project matters?
+
+Quantum optimal control plays a critical role in manipulating quantum systems with high precision, which is essential for quantum computing, sensing, and communication technologies. By improving QuTiP-QOC’s algorithms and modularizing fidelity computations, this project will help researchers and developers design and analyze quantum control sequences more efficiently.
+
+The enhanced fidelity system will provide a flexible, maintainable foundation for future algorithm development and integration with high-performance computing tools. Ultimately, this project will contribute to accelerating advancements in quantum computing by enabling more precise and accessible quantum control solutions.
+
+---
+
+Stay tuned for weekly updates on my journey through this exciting project. I look forward to sharing what I learn and build over the summer!
