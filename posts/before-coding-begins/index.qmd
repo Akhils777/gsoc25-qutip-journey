@@ -1,0 +1,49 @@
+---
+title: "Improving FidelityComputer and Preparing for Integration"
+author: "Akhil Pratap Singh"
+date: "2025-05-27"
+categories: [gsoc, qutip-qoc]
+image: "tests.png"
+---
+
+# What did I do this week?
+
+This week, I worked further on resolving [Issue #10](https://github.com/qutip/qutip-qoc/issues/10), which involves replacing the legacy `qutip_qtrl.fid_computer` with a modern and modular `FidelityComputer` class designed for quantum optimal control workflows.
+
+Previously, I had submitted a preliminary version of this class supporting multiple fidelity types (`PSU`, `SU`, `TRACEDIFF`) and ensuring compatibility with JAX for automatic differentiation. However, based on further reflection, I decided to hold off on raising a pull request and instead focused on polishing the implementation.
+
+The major highlight of the week was addressing the previously failing test cases for:
+
+- **State-to-state GRAPE optimization**
+- **State-to-state CRAB optimization**
+- **Parameterized CRAB optimization**
+
+These failures were caused by subtle differences in fidelity expectations and numerical tolerances when switching to the new engine. I resolved them by:
+
+- Ensuring consistent handling of input shapes and data types
+- Carefully aligning fidelity formulae with the expected definitions in the test suite
+- Improving numerical precision and tolerances where required
+
+As a result, **all tests now pass**, including the edge cases that initially failed.
+
+Beyond that, the direction I’ve been shaping for the `FidelityComputer` revolves around:
+
+-  **Modular structure**: With clearer separation of state, process, and map fidelities in mind, the aim is to make each component independently extensible and easier to maintain.
+-  **Batch support**: Handling multiple quantum states or unitaries efficiently has been central to the design approach, and continues to shape how I think about scaling and performance.
+-  **Cleaner integration**: Ensuring compatibility with GRAPE, CRAB, and other optimization methods remains a key goal — something I’ve been aligning the implementation toward as the project evolves.
+
+
+While the code is functionally complete, I plan to further refine and customize certain parts before raising the pull request.
+
+# Plan for next week?
+
+Next week, I’ll focus on:
+
+- Studying the relevant sections from Alex’s PhD thesis — especially *Section 1.6: Quantum control function optimisation* — to deepen my understanding of GRAPE
+- Finalizing and cleaning up the `FidelityComputer` interface
+- Enhancing the code with optional input validation and diagnostics
+- Raising a well-documented and review-ready pull request
+
+---
+
+I'm excited to be moving closer to a stable and efficient fidelity framework that can serve as the backbone of QuTiP-QOC’s optimization tools.
