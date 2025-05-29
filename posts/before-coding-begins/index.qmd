@@ -1,5 +1,5 @@
 ---
-title: "Improving FidelityComputer and Preparing for Integration"
+title: "Before-Coding-Begins"
 author: "Akhil Pratap Singh"
 date: "2025-05-27"
 categories: [gsoc, qutip-qoc]
