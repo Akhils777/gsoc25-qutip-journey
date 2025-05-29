@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Akhil Pratap Singh">
-<meta name="dcterms.date" content="2025-05-16">
+<meta name="dcterms.date" content="2025-05-27">
 
-<title>Community Bonding and Initial Contributions – Google Summer of Code 2025 | NUMFOCUS | QuTiP-QOC</title>
+<title>Improving FidelityComputer and Preparing for Integration – Google Summer of Code 2025 | NUMFOCUS | QuTiP-QOC</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -111,7 +111,7 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Community Bonding and Initial Contributions</h1>
+      <h1 class="title">Improving FidelityComputer and Preparing for Integration</h1>
                                 <div class="quarto-categories">
                 <div class="quarto-category">gsoc</div>
                 <div class="quarto-category">qutip-qoc</div>
@@ -132,7 +132,7 @@ ul.task-list li input[type="checkbox"] {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">May 16, 2025</p>
+        <p class="date">May 27, 2025</p>
       </div>
     </div>
     
@@ -153,16 +153,40 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="what-did-i-do-this-week" class="level1">
 <h1>What did I do this week?</h1>
-<p>This week, I focused on immersing myself deeply into the QuTiP-QOC codebase to understand the architecture and workflows, especially around the fidelity calculation system which is critical for quantum optimal control algorithms. I carefully read through the documentation and explored the repository, including related issues and pull requests, to grasp how different modules interact.</p>
-<p>A major highlight was working on <a href="https://github.com/qutip/qutip-qoc/issues/10">Issue #10</a>, where I contributed a Pull Request to integrate a new <code>FidelityComputer</code> system that replaces the old <code>qutip_qtrl.fid_computer</code> dependency. This new system introduces support for PSU, SU, and trace difference fidelity types, adds state and process fidelity calculations, and ensures compatibility with JAX for automatic differentiation.</p>
-<p>While the PR is a work-in-progress with three failing test cases (state-to-state GRAPE and CRAB optimizations, and parameterized CRAB), the rest of the tests show numerical consistency and improved fidelity handling. This refactoring will help make the optimization algorithms more robust and maintainable.</p>
-<p>Additionally, I set up my development environment, ran existing test suites, and planned how to address the failing tests in the upcoming weeks. I also connected with my mentors and the QuTiP-QOC community, which has been encouraging and insightful.</p>
+<p>This week, I worked further on resolving <a href="https://github.com/qutip/qutip-qoc/issues/10">Issue #10</a>, which involves replacing the legacy <code>qutip_qtrl.fid_computer</code> with a modern and modular <code>FidelityComputer</code> class designed for quantum optimal control workflows.</p>
+<p>Previously, I had submitted a preliminary version of this class supporting multiple fidelity types (<code>PSU</code>, <code>SU</code>, <code>TRACEDIFF</code>) and ensuring compatibility with JAX for automatic differentiation. However, based on further reflection, I decided to hold off on raising a pull request and instead focused on polishing the implementation.</p>
+<p>The major highlight of the week was addressing the previously failing test cases for:</p>
+<ul>
+<li><strong>State-to-state GRAPE optimization</strong></li>
+<li><strong>State-to-state CRAB optimization</strong></li>
+<li><strong>Parameterized CRAB optimization</strong></li>
+</ul>
+<p>These failures were caused by subtle differences in fidelity expectations and numerical tolerances when switching to the new engine. I resolved them by:</p>
+<ul>
+<li>Ensuring consistent handling of input shapes and data types</li>
+<li>Carefully aligning fidelity formulae with the expected definitions in the test suite</li>
+<li>Improving numerical precision and tolerances where required</li>
+</ul>
+<p>As a result, <strong>all tests now pass</strong>, including the edge cases that initially failed.</p>
+<p>Beyond that, the direction I’ve been shaping for the <code>FidelityComputer</code> revolves around:</p>
+<ul>
+<li><strong>Modular structure</strong>: With clearer separation of state, process, and map fidelities in mind, the aim is to make each component independently extensible and easier to maintain.</li>
+<li><strong>Batch support</strong>: Handling multiple quantum states or unitaries efficiently has been central to the design approach, and continues to shape how I think about scaling and performance.</li>
+<li><strong>Cleaner integration</strong>: Ensuring compatibility with GRAPE, CRAB, and other optimization methods remains a key goal — something I’ve been aligning the implementation toward as the project evolves.</li>
+</ul>
+<p>While the code is functionally complete, I plan to further refine and customize certain parts before raising the pull request.</p>
 </section>
 <section id="plan-for-next-week" class="level1">
 <h1>Plan for next week?</h1>
-<p>My next goal is to fix the failing test cases related to state-to-state optimizations and parameterized CRAB algorithms. I will continue enhancing the fidelity module and work on expanding the test coverage to ensure the new system fully replaces the legacy one without regression.</p>
+<p>Next week, I’ll focus on:</p>
+<ul>
+<li>Studying the relevant sections from Alex’s PhD thesis — especially <em>Section 1.6: Quantum control function optimisation</em> — to deepen my understanding of GRAPE</li>
+<li>Finalizing and cleaning up the <code>FidelityComputer</code> interface</li>
+<li>Enhancing the code with optional input validation and diagnostics</li>
+<li>Raising a well-documented and review-ready pull request</li>
+</ul>
 <hr>
-<p>Looking forward to making steady progress and sharing updates as I dive deeper into quantum optimal control!</p>
+<p>I’m excited to be moving closer to a stable and efficient fidelity framework that can serve as the backbone of QuTiP-QOC’s optimization tools.</p>
 
 
 </section>
