@@ -1,0 +1,50 @@
+---
+title: "Coding Begins! Week#1"
+author: "Akhil Pratap Singh"
+date: "2025-06-05"
+categories: [gsoc, qutip-qoc]
+image: "bugs.jpg"
+---
+
+# What did I do this week?
+
+Over the past week, I’ve been working on analyzing two open issues in the QuTiP-QOC GitHub repository, as discussed in our weekly meeting. These issues highlight important discrepancies in the behavior of optimization algorithms for open quantum systems and represent a significant opportunity to improve reliability and correctness.
+
+### 📌 Issue #47: JOPT Fails for Open-System State Transfer
+
+**Summary**:  
+When using the JOPT algorithm to solve a simple open-system state transfer problem (qubit from ground to excited state), the optimization crashes with a `ValueError` related to a dimension mismatch in the Liouville representation.
+
+**Findings**:
+- The issue arises during the construction of the adjoint of a matrix difference in the JOPT fidelity computation.
+- The mismatch in shapes ((4, 1) vs (1, 4)) suggests a bug in how the density matrix difference is reshaped and handled in Liouville space.
+- Notably, the exact same control setup works fine with GOAT, indicating that this is a JOPT-specific bug.
+
+👉 [View Issue #47](https://github.com/qutip/qutip-qoc/issues/47)
+
+---
+
+### 📌 Issue #46: GRAPE Infidelity Mismatch
+
+**Summary**:  
+The GRAPE algorithm reports a final infidelity below the target threshold (0.0008), but manual simulation using the optimized control returns a significantly worse infidelity (0.0038).
+
+**Findings**:
+- Manual evolution was independently verified using both exponential propagators and `mesolve`, and the results are consistent.
+- This suggests that GRAPE either overestimates fidelity internally or there’s a bug in its cost function or propagation logic.
+- A ~300% mismatch raises concerns about the reliability of convergence metrics, especially in open-system scenarios.
+
+👉 [View Issue #46](https://github.com/qutip/qutip-qoc/issues/46)
+
+---
+
+# Plan for next week?
+
+Next week, I’ll focus on:
+
+- Finalizing and cleaning up the `FidelityComputer` interface
+- Enhancing the code with optional input validation and diagnostics
+- Studying *Section 1.6: Quantum control function optimisation* from Alex’s PhD thesis to deepen my understanding of GRAPE and ensure mathematical consistency
+- Improving documentation and usability for future contributors
+- Writing more unit tests for robustness
+- Raising a well-documented and review-ready pull request
