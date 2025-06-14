@@ -41,7 +41,8 @@ Next week, I’ll focus on:
 
 - Studying the relevant sections from Alex’s PhD thesis — especially *Section 1.6: Quantum control function optimisation* — to deepen my understanding of GRAPE
 - Finalizing and cleaning up the `FidelityComputer` interface
-- Enhancing the code with optional input validation and diagnostics
+- Contributing to documentation improvements as part of [Issue #13](https://github.com/qutip/qutip-qoc/issues/13), particularly:
+  - Investigating the broken search functionality on the [QuTiP-QOC documentation site](https://qutip-qoc.readthedocs.io/en/latest/)
 - Raising a well-documented and review-ready pull request
 
 ---

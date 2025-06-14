@@ -1,7 +1,7 @@
 ---
-title: "Coding Begins! Week#1"
+title: "Week#2"
 author: "Akhil Pratap Singh"
-date: "2025-06-05"
+date: "2025-06-10"
 categories: [gsoc, qutip-qoc]
 image: "Jopt_grape.png"
 ---

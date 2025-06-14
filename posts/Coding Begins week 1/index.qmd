@@ -1,0 +1,55 @@
+---
+title: "Coding Begins! Week#1"
+author: "Akhil Pratap Singh"
+date: "2025-06-05"
+categories: [gsoc, qutip, qutip-qoc]
+image: "doc_img.png"
+---
+
+# What did I do this week?
+
+This week, I focused on two important areas: deepening my understanding of the GRAPE algorithm and working on the QuTiP-QOC documentation system.
+
+📘 **Studying GRAPE from Alex’s PhD Thesis**
+
+As planned, I studied *Section 1.6: Quantum control function optimisation* from [Alex’s PhD thesis]. This section provided a clear and compact overview of gradient-based control optimization techniques in open quantum systems. The insights from this theory helped me better understand how GRAPE is structured and how its gradients behave under Lindblad dynamics — which is crucial for aligning implementation with mathematical expectations.
+
+🛠️ **Fixing the Documentation Search Issue**
+
+I also worked on [Issue #13](https://github.com/qutip/qutip-qoc/issues/13), specifically the part about the search functionality being broken on the documentation website.
+
+Here’s what I discovered:
+
+- When building the documentation locally using the officially supported Sphinx setup (make html in the doc/ directory), the search functionality works as expected.
+- However, when I visited the published documentation site and tried to search for any term, the search bar keeps showing “Searching…” indefinitely and never returns any results.
+
+We discussed this during our chat, and I showed the working version on my local machine. Based on that, we suspected the problem might be due to JavaScript dependencies like jQuery not being correctly loaded in the deployed environment. As a potential fix, I modified the `conf.py` file to explicitly include jQuery:
+
+```python
+html_js_files = [
+    'https://code.jquery.com/jquery-3.6.0.min.js',
+]
+
+<p style="display: flex; gap: 10px;">
+  <img src="./doc_img_1.png" alt="Localhost working" style="width: 49%;" />
+  <img src="./doc_img_2.png" alt="Live website broken" style="width: 49%;" />
+</p>
+
+<p style="display: flex; gap: 10px; justify-content: space-between;">
+  <strong style="width: 49%; text-align: center;">Localhost (Working)</strong>
+  <strong style="width: 49%; text-align: center;">Live Website (Broken)</strong>
+</p>
+
+
+
+
+# Plan for next week
+
+Next week, I’ll focus on:
+
+- Reproducing and analyzing [Issue #47](https://github.com/qutip/qutip-qoc/issues/47), which involves a dimension mismatch error in JOPT during fidelity computation in Liouville space.
+- Investigating [Issue #46](https://github.com/qutip/qutip-qoc/issues/46), where GRAPE reports inaccurate fidelity results compared to manual simulations.
+
+---
+
+I'm looking forward to tackling these deeper optimization challenges while strengthening the documentation that will support future contributors.
