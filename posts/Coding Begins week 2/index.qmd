@@ -1,0 +1,54 @@
+---
+title: "Week#2"
+author: "Akhil Pratap Singh"
+date: "2025-06-05"
+categories: [gsoc, qutip-qoc]
+image: "Jopt_grape.png"
+---
+
+# What did I do this week?
+
+Over the past week, I’ve been working on analyzing two open issues in the QuTiP-QOC GitHub repository, as discussed in our weekly meeting. These issues highlight important discrepancies in the behavior of optimization algorithms for open quantum systems and represent a significant opportunity to improve reliability and correctness.
+
+![](./Grape_Jopt.png)
+
+### 📌 Issue #47: JOPT Fails for Open-System State Transfer
+
+**Summary**:  
+When using the JOPT algorithm to solve a simple open-system state transfer problem (qubit from ground to excited state), the optimization crashes with a `ValueError` related to a dimension mismatch in the Liouville representation.
+
+**Findings**:
+- The issue arises during the construction of the adjoint of a matrix difference in the JOPT fidelity computation.
+- The mismatch in shapes ((4, 1) vs (1, 4)) suggests a bug in how the density matrix difference is reshaped and handled in Liouville space.
+- Notably, the exact same control setup works fine with GOAT, indicating that this is a JOPT-specific bug.
+
+👉 [View Issue #47](https://github.com/qutip/qutip-qoc/issues/47)
+
+---
+
+### 📌 Issue #46: GRAPE Infidelity Mismatch
+
+**Summary**:  
+The GRAPE algorithm reports a final infidelity below the target threshold (0.0008), but manual simulation using the optimized control returns a significantly worse infidelity (0.0038).
+
+**Findings**:
+- Manual evolution was independently verified using both exponential propagators and `mesolve`, and the results are consistent.
+- This suggests that GRAPE either overestimates fidelity internally or there’s a bug in its cost function or propagation logic.
+- A ~300% mismatch raises concerns about the reliability of convergence metrics, especially in open-system scenarios.
+
+👉 [View Issue #46](https://github.com/qutip/qutip-qoc/issues/46)
+
+---
+
+# Plan for next week?
+
+Next week, I’ll focus on:
+
+- Digging deeper into the JOPT dimension mismatch in open-system Liouville space dynamics (Issue #47) and verifying reshaping logic and adjoint consistency
+- Investigating GRAPE's fidelity evaluation pathway (Issue #46) to locate possible discrepancies in how cost values are tracked or computed internally
+- Prototyping potential fixes in a sandboxed environment without affecting core modules
+- Depending on the outcome of these investigations, I plan to raise a PR addressing one or both issues if the proposed fixes prove reliable and non-breaking
+
+---
+
+"I'm motivated by the opportunity to resolve foundational bugs and improve reliability in QuTiP-QOC’s optimization backend — each fix brings us closer to a more robust and trustworthy control framework."

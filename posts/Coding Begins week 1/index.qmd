@@ -1,0 +1,53 @@
+---
+title: "Week of June 5: Deep Dive into GRAPE and Documentation Debugging"
+author: "Akhil Pratap Singh"
+date: "2025-06-05"
+categories: [gsoc, qutip, qutip-qoc, documentation]
+image: "grape-docs.jpg"
+---
+
+# What did I do this week?
+
+This week’s work revolved around two key fronts: understanding the theoretical foundation of GRAPE through Alex’s PhD thesis, and contributing to improving the QuTiP-QOC documentation infrastructure.
+
+📘 **Studying GRAPE in Depth**
+
+I focused on *Section 1.6: Quantum control function optimisation* from [Alex’s PhD thesis], as suggested by my mentor. This section offers a compact but rigorous introduction to the theory behind GRAPE (Gradient Ascent Pulse Engineering), including how control functions are optimized over time in open quantum systems. This helped me align my implementation of `FidelityComputer` with the theoretical formulation of state evolution and gradients under Lindblad dynamics — especially valuable for debugging edge cases.
+
+🛠️ **Documentation: Local vs Website Search Issue**
+
+As part of [Issue #13](https://github.com/qutip/qutip-qoc/issues/13), I explored the documentation search functionality and the broader need to improve accessibility of examples and optimizer descriptions (especially for GOAT and JOPT).
+
+Here’s what I found:
+
+- When I built the documentation using `quarto render` and served it locally (`quarto preview`), the search bar worked perfectly.
+- However, once deployed on the GitHub Pages site, the search **broke silently** — no results were returned even though content existed.
+
+We discussed this during our chat and suspected it might be due to either:
+- GitHub Pages not correctly including the `search.json` file
+- Or a path mismatch between `_site/` and the final hosted structure
+
+As a workaround, we considered publishing to the `gh-pages` branch using `quarto publish gh-pages` and verified that the file structure was correct, but the issue persisted. I showcased this problem to my mentors, and we’re now considering adjusting the `site-url` and `_output.yml` config to ensure proper indexing during deployment. This will be a priority in the coming weeks.
+
+🧭 **Planning Ahead with Open Issues**
+
+During our June 5 meeting, my mentor directed me to begin investigating two key issues:
+
+- [Issue #47](https://github.com/qutip/qutip-qoc/issues/47): JOPT failing for open-system state transfer due to Liouville space dimension mismatches.
+- [Issue #46](https://github.com/qutip/qutip-qoc/issues/46): A discrepancy between GRAPE-reported fidelity and manual fidelity calculation, indicating possible overestimation.
+
+These issues are critical to the robustness of the optimization engine, and I plan to analyze their root causes next.
+
+# Plan for next week?
+
+Next week, I’ll focus on:
+
+- Starting analysis and reproduction of Issue #47 and #46
+- Reviewing and possibly debugging the Liouville representation fidelity mismatch in JOPT
+- Checking the fidelity evaluation pipeline inside GRAPE for open systems
+- Prototyping fixes in isolated scripts before touching the main codebase
+- Continuing to polish documentation: refining config files and rechecking search functionality deployment
+
+---
+
+I'm looking forward to tackling these deeper optimization challenges while strengthening the documentation that will support future contributors.
