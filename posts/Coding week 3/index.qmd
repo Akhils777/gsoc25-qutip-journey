@@ -1,0 +1,51 @@
+---
+title: "Week 3: Fixing Dimension Mismatch and Investigating GRAPE Fidelity Issues"
+author: "Akhil Pratap Singh"
+date: "2025-06-24"
+categories: [gsoc, qutip, qutip-qoc]
+image: "fix-grape-jopt.png"
+---
+
+# What did I do this week?
+
+### 🛠️ Fixing Dimension Mismatch in Open-System TRACEDIFF (Issue #47)
+
+This week, I continued work on [Issue #47](https://github.com/qutip/qutip-qoc/issues/47), where the JOPT algorithm failed in open-system state transfer problems using the `TRACEDIFF` fidelity type.
+
+To resolve this, I proposed a solution by modifying the `_infid()` function to handle **density matrices and state vectors uniformly**, using **JAX-compatible logic** to compute the infidelity depending on whether the final state is a vector or a square matrix.
+
+I submitted a pull request with the initial fix. After receiving feedback from @BoxiLi, I realized the root cause was an **incorrect dimension specification** when constructing the adjoint of a `Qobj`. Specifically, I had reused `diff.dims` while taking `diff.data.adjoint()`, which led to mismatches like `[[4], [1]]` instead of the expected `[[1], [4]]`.
+
+Boxi pointed out that **updating the dimensions** after taking the adjoint — as done in QuTiP’s `dag()` — would be more robust.
+
+✅ The fix was revised to:
+
+```python
+Qobj(diff.data.adjoint(), dims=Dimensions(diff.dims[1], diff.dims[0]), copy=False)
+
+### Investigating GRAPE Infidelity Mismatch (Issue #46)
+I also began investigating Issue #46, where the GRAPE algorithm reports a significantly lower infidelity than what is observed via manual simulation in an open-system qubit control problem.
+
+What I Did:
+Reproduced the issue locally using the script provided in the GitHub issue.
+
+Confirmed that GRAPE reports an infidelity of 0.0008, while manual evolution with the optimized control yields 0.0038 — clearly violating the fidelity target.
+
+Implemented a custom TRACEDIFF fidelity function using Liouville space formalism, and verified that this discrepancy is consistent and reproducible.
+
+- Findings:
+The mismatch isn’t just numerical noise — it suggests that GRAPE is using a fidelity formula suited for closed systems or pure states.
+
+This formulation likely originates from qutip-qtrl and seems to have been carried over to qutip-qoc incorrectly for open systems.
+
+- Suspicions (To Be Confirmed):
+The root cause may lie in the fidelity logic within grape.py or FidelityComputer, which doesn’t correctly account for density matrices under dissipation.
+
+This discrepancy undermines the validity of GRAPE’s convergence metrics in open-system problems.
+
+# Plan for next week
+- Finalize the fidelity investigation in GRAPE.
+
+- Try to raise a pull request with a corrected TRACEDIFF fidelity formulation for open systems.
+
+- Cross-check with mesolve to ensure alignment of GRAPE fidelity computation with expected open-system dynamics.
