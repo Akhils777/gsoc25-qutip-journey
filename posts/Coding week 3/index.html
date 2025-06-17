@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Akhil Pratap Singh">
+<meta name="dcterms.date" content="2025-06-24">
 
-<title>GSOC25-QUTIP-QOC-JOURNEY – Google Summer of Code 2025 | NUMFOCUS | QuTiP-QOC</title>
+<title>Week 3: Fixing Dimension Mismatch and Investigating GRAPE Fidelity Issues – Google Summer of Code 2025 | NUMFOCUS | QuTiP-QOC</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,25 +25,23 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-dfb324f25d9b1687192fa8be62ac8f9c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-dfb324f25d9b1687192fa8be62ac8f9c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -69,67 +69,9 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
 
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
 
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../../styles.css">
 </head>
 
 <body class="nav-fixed fullcontent quarto-light">
@@ -139,7 +81,7 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Google Summer of Code 2025 | NUMFOCUS | QuTiP-QOC</span>
     </a>
   </div>
@@ -150,7 +92,7 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
+    <a class="nav-link" href="../../about.html"> 
 <span class="menu-text">Akhil Pratap Singh</span></a>
   </li>  
   <li class="nav-item compact">
@@ -169,14 +111,31 @@ window.Quarto = {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">GSOC25-QUTIP-QOC-JOURNEY</h1>
-                      </div>
+      <h1 class="title">Week 3: Fixing Dimension Mismatch and Investigating GRAPE Fidelity Issues</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">gsoc</div>
+                <div class="quarto-category">qutip</div>
+                <div class="quarto-category">qutip-qoc</div>
+              </div>
+                  </div>
   </div>
     
   
   <div class="quarto-title-meta">
 
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Akhil Pratap Singh </p>
+            </div>
+    </div>
       
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">June 24, 2025</p>
+      </div>
+    </div>
     
       
     </div>
@@ -193,170 +152,45 @@ window.Quarto = {
 
 
 
-<style>
-.quarto-title .title {
-  text-align: center;
-}
-</style>
+<section id="what-did-i-do-this-week" class="level1">
+<h1>What did I do this week?</h1>
+<section id="fixing-dimension-mismatch-in-open-system-tracediff-issue-47" class="level3">
+<h3 class="anchored" data-anchor-id="fixing-dimension-mismatch-in-open-system-tracediff-issue-47">🛠️ Fixing Dimension Mismatch in Open-System TRACEDIFF (Issue #47)</h3>
+<p>This week, I continued work on <a href="https://github.com/qutip/qutip-qoc/issues/47">Issue #47</a>, where the JOPT algorithm failed in open-system state transfer problems using the <code>TRACEDIFF</code> fidelity type.</p>
+<p>To resolve this, I proposed a solution by modifying the <code>_infid()</code> function to handle <strong>density matrices and state vectors uniformly</strong>, using <strong>JAX-compatible logic</strong> to compute the infidelity depending on whether the final state is a vector or a square matrix.</p>
+<p>I submitted a pull request with the initial fix. After receiving feedback from <span class="citation" data-cites="BoxiLi">@BoxiLi</span>, I realized the root cause was an <strong>incorrect dimension specification</strong> when constructing the adjoint of a <code>Qobj</code>. Specifically, I had reused <code>diff.dims</code> while taking <code>diff.data.adjoint()</code>, which led to mismatches like <code>[[4], [1]]</code> instead of the expected <code>[[1], [4]]</code>.</p>
+<p>Boxi pointed out that <strong>updating the dimensions</strong> after taking the adjoint — as done in QuTiP’s <code>dag()</code> — would be more robust.</p>
+<p>✅ The fix was revised to:</p>
+<p>```python Qobj(diff.data.adjoint(), dims=Dimensions(diff.dims[1], diff.dims[0]), copy=False)</p>
+</section>
+<section id="investigating-grape-infidelity-mismatch-issue-46" class="level3">
+<h3 class="anchored" data-anchor-id="investigating-grape-infidelity-mismatch-issue-46">Investigating GRAPE Infidelity Mismatch (Issue #46)</h3>
+<p>I also began investigating Issue #46, where the GRAPE algorithm reports a significantly lower infidelity than what is observed via manual simulation in an open-system qubit control problem.</p>
+<p>What I Did: Reproduced the issue locally using the script provided in the GitHub issue.</p>
+<p>Confirmed that GRAPE reports an infidelity of 0.0008, while manual evolution with the optimized control yields 0.0038 — clearly violating the fidelity target.</p>
+<p>Implemented a custom TRACEDIFF fidelity function using Liouville space formalism, and verified that this discrepancy is consistent and reproducible.</p>
+<ul>
+<li>Findings: The mismatch isn’t just numerical noise — it suggests that GRAPE is using a fidelity formula suited for closed systems or pure states.</li>
+</ul>
+<p>This formulation likely originates from qutip-qtrl and seems to have been carried over to qutip-qoc incorrectly for open systems.</p>
+<ul>
+<li>Suspicions (To Be Confirmed): The root cause may lie in the fidelity logic within grape.py or FidelityComputer, which doesn’t correctly account for density matrices under dissipation.</li>
+</ul>
+<p>This discrepancy undermines the validity of GRAPE’s convergence metrics in open-system problems.</p>
+</section>
+</section>
+<section id="plan-for-next-week" class="level1">
+<h1>Plan for next week</h1>
+<ul>
+<li><p>Finalize the fidelity investigation in GRAPE.</p></li>
+<li><p>Try to raise a pull request with a corrected TRACEDIFF fidelity formulation for open systems.</p></li>
+<li><p>Cross-check with mesolve to ensure alignment of GRAPE fidelity computation with expected open-system dynamics.</p></li>
+</ul>
 
 
+</section>
 
-
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="Z3NvYyUyQ3F1dGlwJTJDcXV0aXAtcW9j" data-listing-date-sort="1750703400000" data-listing-file-modified-sort="1750146044506" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="353">
-<div class="thumbnail"><a href="./posts/Coding week 3/index.html" class="no-external">
-
-<img loading="lazy" src="./posts/Coding week 3/fix-grape-jopt.png" class="thumbnail-image">
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/Coding week 3/index.html" class="no-external">Week 3: Fixing Dimension Mismatch and Investigating GRAPE Fidelity Issues</a>
-</h3>
-<div class="delink listing-description"><a href="./posts/Coding week 3/index.html" class="no-external">
-This week, I continued work on Issue #47, where the JOPT algorithm failed in open-system state transfer problems using the <code>TRACEDIFF</code> fidelity type.
-</a></div>
-</div>
-<div class="metadata">
-<a href="./posts/Coding week 3/index.html" class="no-external">
-<div class="listing-date">
-Jun 24, 2025
-</div>
-<div class="listing-author">
-Akhil Pratap Singh
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-categories="Z3NvYyUyQ3F1dGlwLXFvYw==" data-listing-date-sort="1749493800000" data-listing-file-modified-sort="1749882769107" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="355">
-<div class="thumbnail"><a href="./posts/Coding Begins week 2/index.html" class="no-external">
-
-<img loading="lazy" src="./posts/Coding Begins week 2/Jopt_grape.png" class="thumbnail-image">
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/Coding Begins week 2/index.html" class="no-external">Week#2</a>
-</h3>
-<div class="delink listing-description"><a href="./posts/Coding Begins week 2/index.html" class="no-external">
-Over the past week, I’ve been working on analyzing two open issues in the QuTiP-QOC GitHub repository, as discussed in our weekly meeting. These issues highlight important…
-</a></div>
-</div>
-<div class="metadata">
-<a href="./posts/Coding Begins week 2/index.html" class="no-external">
-<div class="listing-date">
-Jun 10, 2025
-</div>
-<div class="listing-author">
-Akhil Pratap Singh
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-categories="Z3NvYyUyQ3F1dGlwJTJDcXV0aXAtcW9j" data-listing-date-sort="1749061800000" data-listing-file-modified-sort="1749895130763" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="321">
-<div class="thumbnail"><a href="./posts/Coding Begins week 1/index.html" class="no-external">
-
-<img loading="lazy" src="./posts/Coding Begins week 1/doc_img.png" class="thumbnail-image">
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/Coding Begins week 1/index.html" class="no-external">Coding Begins! Week#1</a>
-</h3>
-<div class="delink listing-description"><a href="./posts/Coding Begins week 1/index.html" class="no-external">
-This week, I focused on two important areas: deepening my understanding of the GRAPE algorithm and working on the QuTiP-QOC documentation system.
-</a></div>
-</div>
-<div class="metadata">
-<a href="./posts/Coding Begins week 1/index.html" class="no-external">
-<div class="listing-date">
-Jun 5, 2025
-</div>
-<div class="listing-author">
-Akhil Pratap Singh
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-categories="Z3NvYyUyQ3F1dGlwLXFvYw==" data-listing-date-sort="1748284200000" data-listing-file-modified-sort="1749856130138" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="361">
-<div class="thumbnail"><a href="./posts/before-coding-begins/index.html" class="no-external">
-
-<img loading="lazy" src="./posts/before-coding-begins/tests.png" class="thumbnail-image">
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/before-coding-begins/index.html" class="no-external">Before-Coding-Begins</a>
-</h3>
-<div class="delink listing-description"><a href="./posts/before-coding-begins/index.html" class="no-external">
-This week, I worked further on resolving Issue #10, which involves replacing the legacy <code>qutip_qtrl.fid_computer</code> with a modern and modular <code>FidelityComputer</code> class designed for…
-</a></div>
-</div>
-<div class="metadata">
-<a href="./posts/before-coding-begins/index.html" class="no-external">
-<div class="listing-date">
-May 27, 2025
-</div>
-<div class="listing-author">
-Akhil Pratap Singh
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="4" data-categories="Z3NvYyUyQ3F1dGlwLXFvYw==" data-listing-date-sort="1747333800000" data-listing-file-modified-sort="1747763243556" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="249">
-<div class="thumbnail"><a href="./posts/community-bond/index.html" class="no-external">
-
-<img loading="lazy" src="./posts/community-bond/community-bond.jpg" class="thumbnail-image">
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/community-bond/index.html" class="no-external">Community Bonding and Initial Contributions</a>
-</h3>
-<div class="delink listing-description"><a href="./posts/community-bond/index.html" class="no-external">
-This week, I focused on immersing myself deeply into the QuTiP-QOC codebase to understand the architecture and workflows, especially around the fidelity calculation system…
-</a></div>
-</div>
-<div class="metadata">
-<a href="./posts/community-bond/index.html" class="no-external">
-<div class="listing-date">
-May 16, 2025
-</div>
-<div class="listing-author">
-Akhil Pratap Singh
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="5" data-categories="Z3NvYyUyQ3F1dGlwLXFvYw==" data-listing-date-sort="1746729000000" data-listing-file-modified-sort="1747763243557" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="485">
-<div class="thumbnail"><a href="./posts/intro/index.html" class="no-external">
-
-<img loading="lazy" src="./posts/intro/thumb.jpg" class="thumbnail-image">
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/intro/index.html" class="no-external">Excited to Join GSoC 2025 with QuTiP-QOC!</a>
-</h3>
-<div class="delink listing-description"><a href="./posts/intro/index.html" class="no-external">
-I am incredibly excited to announce that I have been selected for Google Summer of Code (GSoC) 2025 with the QuTiP community! This is a fantastic opportunity to deepen my…
-</a></div>
-</div>
-<div class="metadata">
-<a href="./posts/intro/index.html" class="no-external">
-<div class="listing-date">
-May 9, 2025
-</div>
-<div class="listing-author">
-Akhil Pratap Singh
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">No matching items</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
