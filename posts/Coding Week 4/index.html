@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Akhil Pratap Singh">
-<meta name="dcterms.date" content="2025-06-17">
+<meta name="dcterms.date" content="2025-06-24">
 
-<title>Week 3: Fixing Dimension Mismatch and Investigating GRAPE Fidelity Issues – Google Summer of Code 2025 | NUMFOCUS | QuTiP-QOC</title>
+<title>Week 4 – Google Summer of Code 2025 | NUMFOCUS | QuTiP-QOC</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,6 +21,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -111,7 +146,7 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Week 3: Fixing Dimension Mismatch and Investigating GRAPE Fidelity Issues</h1>
+      <h1 class="title">Week 4</h1>
                                 <div class="quarto-categories">
                 <div class="quarto-category">gsoc</div>
                 <div class="quarto-category">qutip</div>
@@ -133,7 +168,7 @@ ul.task-list li input[type="checkbox"] {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">June 17, 2025</p>
+        <p class="date">June 24, 2025</p>
       </div>
     </div>
     
@@ -154,42 +189,58 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="what-did-i-do-this-week" class="level1">
 <h1>What did I do this week?</h1>
-<section id="fixing-dimension-mismatch-in-open-system-tracediff-issue-47" class="level3">
-<h3 class="anchored" data-anchor-id="fixing-dimension-mismatch-in-open-system-tracediff-issue-47">🛠️ Fixing Dimension Mismatch in Open-System TRACEDIFF (Issue #47)</h3>
-<p>This week, I continued work on <a href="https://github.com/qutip/qutip-qoc/issues/47">Issue #47</a>, where the JOPT algorithm failed in open-system state transfer problems using the <code>TRACEDIFF</code> fidelity type.</p>
-<p>To resolve this, I proposed a solution by modifying the <code>_infid()</code> function to handle <strong>density matrices and state vectors uniformly</strong>, using <strong>JAX-compatible logic</strong> to compute the infidelity depending on whether the final state is a vector or a square matrix.</p>
-<p>I submitted a pull request with the initial fix. After receiving feedback from <span class="citation" data-cites="BoxiLi">@BoxiLi</span>, I realized the root cause was an <strong>incorrect dimension specification</strong> when constructing the adjoint of a <code>Qobj</code>. Specifically, I had reused <code>diff.dims</code> while taking <code>diff.data.adjoint()</code>, which led to mismatches like <code>[[4], [1]]</code> instead of the expected <code>[[1], [4]]</code>.</p>
-<p>Boxi pointed out that <strong>updating the dimensions</strong> after taking the adjoint — as done in QuTiP’s <code>dag()</code> — would be more robust.</p>
-<p>✅ The fix was revised to:</p>
-<p>```python Qobj(diff.data.adjoint(), dims=Dimensions(diff.dims[1], diff.dims[0]), copy=False)</p>
+<p><img src="./dag.png" class="img-fluid"></p>
+<p>Following last week’s investigation into <a href="https://github.com/qutip/qutip-qoc/issues/47">Issue #47</a>, where the JOPT algorithm fails for open-system state transfer using the <code>TRACEDIFF</code> fidelity type, we revisited and reworked the proposed solution based on mentor feedback.</p>
+<p>In my initial PR, I attempted to fix the bug by manually constructing the adjoint using:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Qobj(diff.data.adjoint(), dims<span class="op">=</span>Dimensions(diff.dims[<span class="dv">1</span>], diff.dims[<span class="dv">0</span>]), copy<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>During our weekly meeting, we discussed that the <code>Dimensions</code> class doesn’t exist in the version of QuTiP (v5.1) used in <code>qutip-qoc</code>. This prompted us to explore simpler, version-compatible alternatives.</p>
+<section id="mentor-suggestions" class="level2">
+<h2 class="anchored" data-anchor-id="mentor-suggestions">🧠 Mentor Suggestions</h2>
+<p><span class="citation" data-cites="BoxiLi">@BoxiLi</span> suggested that since <code>diff</code> is already a <code>Qobj</code>, we can simply take the adjoint using:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>diff_dag <span class="op">=</span> diff.dag()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Alex agreed with this direction, noting that “perhaps all we need is an appropriately placed <code>.dag()</code>”.</p>
 </section>
-<section id="investigating-grape-infidelity-mismatch-issue-46" class="level3">
-<h3 class="anchored" data-anchor-id="investigating-grape-infidelity-mismatch-issue-46">Investigating GRAPE Infidelity Mismatch (Issue #46)</h3>
-<p>I also began investigating Issue #46, where the GRAPE algorithm reports a significantly lower infidelity than what is observed via manual simulation in an open-system qubit control problem.</p>
-<p>What I Did: Reproduced the issue locally using the script provided in the GitHub issue.</p>
-<p>Confirmed that GRAPE reports an infidelity of 0.0008, while manual evolution with the optimized control yields 0.0038 — clearly violating the fidelity target.</p>
-<p>Implemented a custom TRACEDIFF fidelity function using Liouville space formalism, and verified that this discrepancy is consistent and reproducible.</p>
+<section id="what-we-tried" class="level2">
+<h2 class="anchored" data-anchor-id="what-we-tried">🔍 What We Tried</h2>
+<p>We replaced the manual adjoint with:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>diff_dag <span class="op">=</span> diff.dag()</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> <span class="fl">0.5</span> <span class="op">*</span> (diff_dag <span class="op">*</span> diff).tr()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>However, this caused compatibility issues with JAX. Specifically, calling <code>.tr()</code> raised an <code>AttributeError</code> because the underlying object became a <code>DynamicJaxprTracer</code>, which doesn’t support typical QuTiP methods like <code>.tr()</code>, <code>.full()</code>, or <code>.data.trace()</code>.</p>
+</section>
+<section id="what-were-doing-now" class="level2">
+<h2 class="anchored" data-anchor-id="what-were-doing-now">🛠️ What We’re Doing Now</h2>
+<p>To address the issue, we’re now exploring a JAX-compatible alternative that uses raw JAX array operations instead of QuTiP methods. For example:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> jax.numpy <span class="im">as</span> jnp</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> <span class="fl">0.5</span> <span class="op">*</span> jnp.trace(jnp.matmul(diff_dag._jxa, diff._jxa))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Our goal is to: - ✅ Maintain a minimal patch size (as mentors prefer) - 🔄 Avoid QuTiP internals that break with JAX tracing - ⚙️ Preserve logic correctness for density matrices in Liouville space</p>
+</section>
+<section id="testing" class="level2">
+<h2 class="anchored" data-anchor-id="testing">🧪 Testing</h2>
+<p>The updated fix is being tested on a minimal open-system JOPT use case that previously failed with TRACEDIFF. The test is verifying that:</p>
 <ul>
-<li>Findings: The mismatch isn’t just numerical noise — it suggests that GRAPE is using a fidelity formula suited for closed systems or pure states.</li>
+<li><code>diff.dag()</code> behaves as expected</li>
+<li>The fidelity value is computed via JAX-compatible expressions</li>
+<li>The new logic doesn’t introduce new shape or gradient issues</li>
 </ul>
-<p>This formulation likely originates from qutip-qtrl and seems to have been carried over to qutip-qoc incorrectly for open systems.</p>
+<hr>
+</section>
+<section id="experimental-qtrl-integration" class="level2">
+<h2 class="anchored" data-anchor-id="experimental-qtrl-integration">🔧 Experimental Qtrl Integration</h2>
+<p>I also began early experiments to explore the dependency and fidelity logic in <a href="https://github.com/qutip/qutip-qtrl"><code>qutip-qtrl</code></a>. This included:</p>
 <ul>
-<li>Suspicions (To Be Confirmed): The root cause may lie in the fidelity logic within grape.py or FidelityComputer, which doesn’t correctly account for density matrices under dissipation.</li>
+<li>Identifying key parts of <code>qtrl</code> that overlap with <code>qutip-qoc</code></li>
+<li>Experimentally copying selected fidelity-related files from <code>qtrl</code> into the <code>qutip-qoc</code> codebase</li>
+<li>Testing whether they can be made to work as a proof-of-concept, potentially as part of a future unification</li>
 </ul>
-<p>This discrepancy undermines the validity of GRAPE’s convergence metrics in open-system problems.</p>
+<p>This is just a trial, but it helps identify where tight coupling exists and what effort would be required to integrate or migrate logic more formally.</p>
+<hr>
 </section>
 </section>
 <section id="plan-for-next-week" class="level1">
 <h1>Plan for next week</h1>
-<ul>
-<li><p>Try out BL’s suggested improvements on Issue #47 to further refine the TRACEDIFF fidelity fix.</p></li>
-<li><p>Investigate the relationship between fidelity measures used in qutip-qtrl and those currently implemented in qutip-qoc, as discussed in Issue #46.</p></li>
-<li><p>Begin exploring how qtrl’s fidelity logic could be adapted into qutip-qoc by:</p>
-<p>Identifying key dependency points between the two,</p>
-<p>Experimentally copying over relevant fidelity-related files from Qtrl into QOC and attempting to make them work as a proof-of-concept.</p></li>
-</ul>
 <hr>
-<p>I’m excited to keep digging into these deeper architectural connections between Qtrl and QOC, as they could lay the groundwork for a unified and more reliable optimization framework in QuTiP.</p>
+<p>I’m excited to be moving closer to a JAX-compatible, open-system-aware fidelity framework that can serve as a reliable core for QuTiP-QOC’s optimization methods.</p>
 
 
 </section>
