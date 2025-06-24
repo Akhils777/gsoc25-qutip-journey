@@ -1,0 +1,85 @@
+---
+title: "Week 4"
+author: "Akhil Pratap Singh"
+date: "2025-06-24"
+categories: [gsoc, qutip, qutip-qoc]
+image: "working.png"
+---
+
+# What did I do this week?
+
+![](./dag.png)
+
+Following last week’s investigation into [Issue #47](https://github.com/qutip/qutip-qoc/issues/47), where the JOPT algorithm fails for open-system state transfer using the `TRACEDIFF` fidelity type, we revisited and reworked the proposed solution based on mentor feedback.
+
+In my initial PR, I attempted to fix the bug by manually constructing the adjoint using:
+
+```python
+Qobj(diff.data.adjoint(), dims=Dimensions(diff.dims[1], diff.dims[0]), copy=False)
+```
+
+During our weekly meeting, we discussed that the `Dimensions` class doesn’t exist in the version of QuTiP (v5.1) used in `qutip-qoc`. This prompted us to explore simpler, version-compatible alternatives.
+
+## 🧠 Mentor Suggestions
+
+@BoxiLi suggested that since `diff` is already a `Qobj`, we can simply take the adjoint using:
+
+```python
+diff_dag = diff.dag()
+```
+
+Alex agreed with this direction, noting that “perhaps all we need is an appropriately placed `.dag()`”.
+
+## 🔍 What We Tried
+
+We replaced the manual adjoint with:
+
+```python
+diff_dag = diff.dag()
+g = 0.5 * (diff_dag * diff).tr()
+```
+
+However, this caused compatibility issues with JAX. Specifically, calling `.tr()` raised an `AttributeError` because the underlying object became a `DynamicJaxprTracer`, which doesn’t support typical QuTiP methods like `.tr()`, `.full()`, or `.data.trace()`.
+
+## 🛠️ What We're Doing Now
+
+To address the issue, we’re now exploring a JAX-compatible alternative that uses raw JAX array operations instead of QuTiP methods. For example:
+
+```python
+import jax.numpy as jnp
+
+g = 0.5 * jnp.trace(jnp.matmul(diff_dag._jxa, diff._jxa))
+```
+
+Our goal is to:
+- ✅ Maintain a minimal patch size (as mentors prefer)
+- 🔄 Avoid QuTiP internals that break with JAX tracing
+- ⚙️ Preserve logic correctness for density matrices in Liouville space
+
+## 🧪 Testing
+
+The updated fix is being tested on a minimal open-system JOPT use case that previously failed with TRACEDIFF. The test is verifying that:
+
+- `diff.dag()` behaves as expected
+- The fidelity value is computed via JAX-compatible expressions
+- The new logic doesn’t introduce new shape or gradient issues
+
+---
+
+## 🔧 Experimental Qtrl Integration
+
+I also began early experiments to explore the dependency and fidelity logic in [`qutip-qtrl`](https://github.com/qutip/qutip-qtrl). This included:
+
+- Identifying key parts of `qtrl` that overlap with `qutip-qoc`
+- Experimentally copying selected fidelity-related files from `qtrl` into the `qutip-qoc` codebase
+- Testing whether they can be made to work as a proof-of-concept, potentially as part of a future unification
+
+This is just a trial, but it helps identify where tight coupling exists and what effort would be required to integrate or migrate logic more formally.
+
+---
+
+# Plan for next week
+
+---
+
+I'm excited to be moving closer to a JAX-compatible, open-system-aware fidelity framework that can serve as a reliable core for QuTiP-QOC’s optimization methods.

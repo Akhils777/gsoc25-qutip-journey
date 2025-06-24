@@ -1,9 +1,9 @@
 ---
 title: "Week 3: Fixing Dimension Mismatch and Investigating GRAPE Fidelity Issues"
 author: "Akhil Pratap Singh"
-date: "2025-06-24"
+date: "2025-06-17"
 categories: [gsoc, qutip, qutip-qoc]
-image: "fix-grape-jopt.png"
+image: "dimensions.png"
 ---
 
 # What did I do this week?
@@ -44,8 +44,18 @@ The root cause may lie in the fidelity logic within grape.py or FidelityComputer
 This discrepancy undermines the validity of GRAPE’s convergence metrics in open-system problems.
 
 # Plan for next week
-- Finalize the fidelity investigation in GRAPE.
+- Try out BL's suggested improvements on Issue #47 to further refine the TRACEDIFF fidelity fix.
 
-- Try to raise a pull request with a corrected TRACEDIFF fidelity formulation for open systems.
+- Investigate the relationship between fidelity measures used in qutip-qtrl and those currently implemented in qutip-qoc, as discussed in Issue #46.
 
-- Cross-check with mesolve to ensure alignment of GRAPE fidelity computation with expected open-system dynamics.
+- Begin exploring how qtrl's fidelity logic could be adapted into qutip-qoc by:
+
+  Identifying key dependency points between the two,
+
+  Experimentally copying over relevant fidelity-related files from Qtrl into QOC and attempting to make them work as a proof-of-concept.
+
+---
+
+I’m excited to keep digging into these deeper architectural connections between Qtrl and QOC, as they could lay the groundwork for a unified and more reliable optimization framework in QuTiP.
+
+
