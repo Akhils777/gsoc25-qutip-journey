@@ -10,7 +10,7 @@ image: "working.png"
 
 ![](./dag.png)
 
-Following last week’s investigation into [Issue #47](https://github.com/qutip/qutip-qoc/issues/47), where the JOPT algorithm fails for open-system state transfer using the `TRACEDIFF` fidelity type, we revisited and reworked the proposed solution based on mentor feedback.
+Following last week’s investigation into [Issue #47](https://github.com/qutip/qutip-qoc/issues/47), where the JOPT algorithm fails for open-system state transfer using the `TRACEDIFF` fidelity type, I revisited and reworked the proposed solution based on mentor feedback.
 
 In my initial PR, I attempted to fix the bug by manually constructing the adjoint using:
 
@@ -30,7 +30,7 @@ diff_dag = diff.dag()
 
 Alex agreed with this direction, noting that “perhaps all we need is an appropriately placed `.dag()`”.
 
-## 🔍 What We Tried
+## 🔍 What I Tried
 
 We replaced the manual adjoint with:
 
@@ -41,9 +41,9 @@ g = 0.5 * (diff_dag * diff).tr()
 
 However, this caused compatibility issues with JAX. Specifically, calling `.tr()` raised an `AttributeError` because the underlying object became a `DynamicJaxprTracer`, which doesn’t support typical QuTiP methods like `.tr()`, `.full()`, or `.data.trace()`.
 
-## 🛠️ What We're Doing Now
+## 🛠️ What I am Doing Now
 
-To address the issue, we’re now exploring a JAX-compatible alternative that uses raw JAX array operations instead of QuTiP methods. For example:
+To address the issue, I am now exploring a JAX-compatible alternative that uses raw JAX array operations instead of QuTiP methods. For example:
 
 ```python
 import jax.numpy as jnp

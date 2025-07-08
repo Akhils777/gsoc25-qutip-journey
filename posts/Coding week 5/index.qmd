@@ -1,0 +1,72 @@
+---
+title: "Week 5"
+author: "Akhil Pratap Singh"
+date: "2025-07-01"
+categories: [gsoc, qutip, qutip-qoc]
+---
+
+# What did I do this week?
+
+This week, I tackled [Issue #47](https://github.com/qutip/qutip-qoc/issues/47), where the JOPT optimizer failed on open-system state transfer tasks. The root cause was a dimension mismatch when reconstructing a `Qobj` inside a JAX-traced function:
+
+```python
+diff_dag = Qobj(diff.data.adjoint(), dims=diff.dims)
+g = 0.5 * (diff_dag * diff).data.trace()
+```
+
+This approach didn’t play well with JAX’s tracing mechanism, especially under `jit` and batch execution. To resolve it, I replaced it with a fully JAX-native computation:
+
+```python
+diff_dag = diff.dag()
+g = 0.5 * jnp.trace(diff_dag.data._jxa @ diff.data._jxa)
+```
+
+This avoids any fallback to `Qobj()` constructors or `.trace()` methods, which are incompatible during JAX tracing. I tested this thoroughly under both `jit` and batch modes, and it worked as expected.
+
+---
+
+##  Catch: Version Incompatibility After Raising PR
+
+After raising the PR, I encountered failing tests. The cause? A silent upgrade to `jax==0.6.2`, which introduces a breaking change: the internal `jaxlib.xla_extension` (used by some parts of QuTiP) was removed or changed. This means anything depending on `PjitFunction` inside `xla_extension` fails silently or raises obscure runtime errors.
+
+---
+
+# Focus Area: Refactoring GRAPE to Fit QOC Architecture
+
+I also began work on the next major phase of the QOC–QTRL integration: migrating the GRAPE optimization logic into QOC in a modular and maintainable way.
+
+##  Step 1: Preparing the Staging Environment (`q2/`)
+
+To enable clean experimentation, I created a `q2/` folder under `src/qutip_qoc/`, which serves as a sandbox for integrating logic from `qutip-qtrl`.
+
+I copied the following key modules from QTRL that are essential to GRAPE:
+
+- `dynamics.py`
+- `fidcomp.py`
+- `dump.py`
+- `grape.py`
+- `pulsegen.py`
+- `optimizer.py`
+- `optimresult.py`
+
+## Step 2: Analyzing `_grape.py` in QOC
+
+I explored the existing `_grape.py` file in QOC, which provides a GRAPE interface but still relies on QTRL’s `Optimizer` class. It wraps `.infidelity()` and `.gradient()` methods but accesses `fid_computer` and control amplitudes indirectly via `self._qtrl`, a deeply coupled structure.
+
+### Step 3: Initial Cleanup — Removed QTRL Logging
+
+Following Boxi’s suggestion, I began the refactoring by **removing the QTRL-specific logging setup** from `_grape.py`.  
+
+This included:
+
+- Removing `import qutip_qtrl.logging_utils as logging`
+- Removing `logger = logging.get_logger()`
+- Deleting all `logger.debug(...)` lines and `if self._qtrl.log_level <= logging.DEBUG:` checks
+
+I did **not** touch the rest of the code structure — everything else like `self._qtrl.stats`, `self._qtrl.dump`, and `self._qtrl.iter_summary` was left intact.  
+
+After this cleanup, I reran the tests to confirm that **removing logging had no effect on core functionality**. All tests passed, indicating it was safe to proceed with further modularization later.
+
+---
+
+I'm excited to be moving closer to a modular and JAX-compatible optimization framework that aligns with the goals of QuTiP-QOC and supports robust open-system quantum control.

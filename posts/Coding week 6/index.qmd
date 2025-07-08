@@ -1,0 +1,49 @@
+---
+title: "Week 6"
+author: "Akhil Pratap Singh"
+date: "2025-07-08"
+categories: [gsoc, qutip, qutip-qoc]
+image: "jax.png"
+---
+
+# What did I do this week?
+
+This week, I focused on resolving compatibility issues caused by the recent upgrade to `jax==0.6.2`. The update removed internal access to attributes like `jaxlib.xla_extension.PjitFunction` and `pxla._xla.PjitFunction`, which previously allowed us to identify JAX-compiled functions. This change caused test failures due to broken type checks.
+
+To resolve the issue, I updated the `result.py` module by replacing the old type-checking logic with a safer alternative:
+
+```python
+_jitfun_type = type(jax.jit(lambda x: x))
+```
+
+This avoids reliance on private APIs and ensures future-proof compatibility across JAX versions.
+
+    I re-verified the failing tests with the updated `qutip-jax` installed, and **all tests now pass**.
+
+---
+
+# Pull Request Progress
+
+After completing the fix, I addressed all pending review comments, removed unnecessary print and debug statements, and wrapped up the final discussion point. I then submitted the pull request, which **successfully passed all tests**.
+
+---
+
+# QTRL Logging Cleanup in QOC
+
+Alongside the JAX fix, I continued working on the QTRL-to-QOC migration effort by cleaning up legacy logging code in QOC’s optimizer modules.
+
+### 🔧 Specifically, I:
+
+- Removed QTRL-specific logging usage from `_grape.py` and `_crab.py`.
+- Eliminated:
+  - `import qutip_qtrl.logging_utils`
+  - `logger = logging.get_logger()`
+  - All `logger.debug(...)` calls
+
+I ensured that surrounding logic tied to `self._qtrl.stats`, `self._qtrl.iter_summary`, and `self._qtrl.dump` remained untouched, so functionality was preserved even as unused logging code was removed.
+
+After making these changes, I ran the full test suite and **confirmed that all tests passed**.
+
+---
+
+I'm excited to be moving closer to a cleaner, more modular, and JAX-compatible QOC codebase that’s easier to maintain and extend for future optimizers.
