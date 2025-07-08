@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Akhil Pratap Singh">
-<meta name="dcterms.date" content="2025-06-24">
+<meta name="dcterms.date" content="2025-07-01">
 
-<title>Week 4 – Google Summer of Code 2025 | NUMFOCUS | QuTiP-QOC</title>
+<title>Week 5 – Google Summer of Code 2025 | NUMFOCUS | QuTiP-QOC</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -146,7 +146,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Week 4</h1>
+      <h1 class="title">Week 5</h1>
                                 <div class="quarto-categories">
                 <div class="quarto-category">gsoc</div>
                 <div class="quarto-category">qutip</div>
@@ -168,7 +168,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">June 24, 2025</p>
+        <p class="date">July 1, 2025</p>
       </div>
     </div>
     
@@ -189,60 +189,57 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="what-did-i-do-this-week" class="level1">
 <h1>What did I do this week?</h1>
-<p><img src="./dag.png" class="img-fluid"></p>
-<p>Following last week’s investigation into <a href="https://github.com/qutip/qutip-qoc/issues/47">Issue #47</a>, where the JOPT algorithm fails for open-system state transfer using the <code>TRACEDIFF</code> fidelity type, I revisited and reworked the proposed solution based on mentor feedback.</p>
-<p>In my initial PR, I attempted to fix the bug by manually constructing the adjoint using:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Qobj(diff.data.adjoint(), dims<span class="op">=</span>Dimensions(diff.dims[<span class="dv">1</span>], diff.dims[<span class="dv">0</span>]), copy<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>During our weekly meeting, we discussed that the <code>Dimensions</code> class doesn’t exist in the version of QuTiP (v5.1) used in <code>qutip-qoc</code>. This prompted us to explore simpler, version-compatible alternatives.</p>
-<section id="mentor-suggestions" class="level2">
-<h2 class="anchored" data-anchor-id="mentor-suggestions">🧠 Mentor Suggestions</h2>
-<p><span class="citation" data-cites="BoxiLi">@BoxiLi</span> suggested that since <code>diff</code> is already a <code>Qobj</code>, we can simply take the adjoint using:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>diff_dag <span class="op">=</span> diff.dag()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Alex agreed with this direction, noting that “perhaps all we need is an appropriately placed <code>.dag()</code>”.</p>
+<p>This week, I tackled <a href="https://github.com/qutip/qutip-qoc/issues/47">Issue #47</a>, where the JOPT optimizer failed on open-system state transfer tasks. The root cause was a dimension mismatch when reconstructing a <code>Qobj</code> inside a JAX-traced function:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>diff_dag <span class="op">=</span> Qobj(diff.data.adjoint(), dims<span class="op">=</span>diff.dims)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> <span class="fl">0.5</span> <span class="op">*</span> (diff_dag <span class="op">*</span> diff).data.trace()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This approach didn’t play well with JAX’s tracing mechanism, especially under <code>jit</code> and batch execution. To resolve it, I replaced it with a fully JAX-native computation:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>diff_dag <span class="op">=</span> diff.dag()</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> <span class="fl">0.5</span> <span class="op">*</span> jnp.trace(diff_dag.data._jxa <span class="op">@</span> diff.data._jxa)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This avoids any fallback to <code>Qobj()</code> constructors or <code>.trace()</code> methods, which are incompatible during JAX tracing. I tested this thoroughly under both <code>jit</code> and batch modes, and it worked as expected.</p>
+<hr>
+<section id="catch-version-incompatibility-after-raising-pr" class="level2">
+<h2 class="anchored" data-anchor-id="catch-version-incompatibility-after-raising-pr">Catch: Version Incompatibility After Raising PR</h2>
+<p>After raising the PR, I encountered failing tests. The cause? A silent upgrade to <code>jax==0.6.2</code>, which introduces a breaking change: the internal <code>jaxlib.xla_extension</code> (used by some parts of QuTiP) was removed or changed. This means anything depending on <code>PjitFunction</code> inside <code>xla_extension</code> fails silently or raises obscure runtime errors.</p>
+<hr>
 </section>
-<section id="what-i-tried" class="level2">
-<h2 class="anchored" data-anchor-id="what-i-tried">🔍 What I Tried</h2>
-<p>We replaced the manual adjoint with:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>diff_dag <span class="op">=</span> diff.dag()</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> <span class="fl">0.5</span> <span class="op">*</span> (diff_dag <span class="op">*</span> diff).tr()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>However, this caused compatibility issues with JAX. Specifically, calling <code>.tr()</code> raised an <code>AttributeError</code> because the underlying object became a <code>DynamicJaxprTracer</code>, which doesn’t support typical QuTiP methods like <code>.tr()</code>, <code>.full()</code>, or <code>.data.trace()</code>.</p>
 </section>
-<section id="what-i-am-doing-now" class="level2">
-<h2 class="anchored" data-anchor-id="what-i-am-doing-now">🛠️ What I am Doing Now</h2>
-<p>To address the issue, I am now exploring a JAX-compatible alternative that uses raw JAX array operations instead of QuTiP methods. For example:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> jax.numpy <span class="im">as</span> jnp</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> <span class="fl">0.5</span> <span class="op">*</span> jnp.trace(jnp.matmul(diff_dag._jxa, diff._jxa))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Our goal is to: - ✅ Maintain a minimal patch size (as mentors prefer) - 🔄 Avoid QuTiP internals that break with JAX tracing - ⚙️ Preserve logic correctness for density matrices in Liouville space</p>
-</section>
-<section id="testing" class="level2">
-<h2 class="anchored" data-anchor-id="testing">🧪 Testing</h2>
-<p>The updated fix is being tested on a minimal open-system JOPT use case that previously failed with TRACEDIFF. The test is verifying that:</p>
+<section id="focus-area-refactoring-grape-to-fit-qoc-architecture" class="level1">
+<h1>Focus Area: Refactoring GRAPE to Fit QOC Architecture</h1>
+<p>I also began work on the next major phase of the QOC–QTRL integration: migrating the GRAPE optimization logic into QOC in a modular and maintainable way.</p>
+<section id="step-1-preparing-the-staging-environment-q2" class="level2">
+<h2 class="anchored" data-anchor-id="step-1-preparing-the-staging-environment-q2">Step 1: Preparing the Staging Environment (<code>q2/</code>)</h2>
+<p>To enable clean experimentation, I created a <code>q2/</code> folder under <code>src/qutip_qoc/</code>, which serves as a sandbox for integrating logic from <code>qutip-qtrl</code>.</p>
+<p>I copied the following key modules from QTRL that are essential to GRAPE:</p>
 <ul>
-<li><code>diff.dag()</code> behaves as expected</li>
-<li>The fidelity value is computed via JAX-compatible expressions</li>
-<li>The new logic doesn’t introduce new shape or gradient issues</li>
+<li><code>dynamics.py</code></li>
+<li><code>fidcomp.py</code></li>
+<li><code>dump.py</code></li>
+<li><code>grape.py</code></li>
+<li><code>pulsegen.py</code></li>
+<li><code>optimizer.py</code></li>
+<li><code>optimresult.py</code></li>
 </ul>
-<hr>
 </section>
-<section id="experimental-qtrl-integration" class="level2">
-<h2 class="anchored" data-anchor-id="experimental-qtrl-integration">🔧 Experimental Qtrl Integration</h2>
-<p>I also began early experiments to explore the dependency and fidelity logic in <a href="https://github.com/qutip/qutip-qtrl"><code>qutip-qtrl</code></a>. This included:</p>
+<section id="step-2-analyzing-_grape.py-in-qoc" class="level2">
+<h2 class="anchored" data-anchor-id="step-2-analyzing-_grape.py-in-qoc">Step 2: Analyzing <code>_grape.py</code> in QOC</h2>
+<p>I explored the existing <code>_grape.py</code> file in QOC, which provides a GRAPE interface but still relies on QTRL’s <code>Optimizer</code> class. It wraps <code>.infidelity()</code> and <code>.gradient()</code> methods but accesses <code>fid_computer</code> and control amplitudes indirectly via <code>self._qtrl</code>, a deeply coupled structure.</p>
+<section id="step-3-initial-cleanup-removed-qtrl-logging" class="level3">
+<h3 class="anchored" data-anchor-id="step-3-initial-cleanup-removed-qtrl-logging">Step 3: Initial Cleanup — Removed QTRL Logging</h3>
+<p>Following Boxi’s suggestion, I began the refactoring by <strong>removing the QTRL-specific logging setup</strong> from <code>_grape.py</code>.</p>
+<p>This included:</p>
 <ul>
-<li>Identifying key parts of <code>qtrl</code> that overlap with <code>qutip-qoc</code></li>
-<li>Experimentally copying selected fidelity-related files from <code>qtrl</code> into the <code>qutip-qoc</code> codebase</li>
-<li>Testing whether they can be made to work as a proof-of-concept, potentially as part of a future unification</li>
+<li>Removing <code>import qutip_qtrl.logging_utils as logging</code></li>
+<li>Removing <code>logger = logging.get_logger()</code></li>
+<li>Deleting all <code>logger.debug(...)</code> lines and <code>if self._qtrl.log_level &lt;= logging.DEBUG:</code> checks</li>
 </ul>
-<p>This is just a trial, but it helps identify where tight coupling exists and what effort would be required to integrate or migrate logic more formally.</p>
+<p>I did <strong>not</strong> touch the rest of the code structure — everything else like <code>self._qtrl.stats</code>, <code>self._qtrl.dump</code>, and <code>self._qtrl.iter_summary</code> was left intact.</p>
+<p>After this cleanup, I reran the tests to confirm that <strong>removing logging had no effect on core functionality</strong>. All tests passed, indicating it was safe to proceed with further modularization later.</p>
 <hr>
-</section>
-</section>
-<section id="plan-for-next-week" class="level1">
-<h1>Plan for next week</h1>
-<hr>
-<p>I’m excited to be moving closer to a JAX-compatible, open-system-aware fidelity framework that can serve as a reliable core for QuTiP-QOC’s optimization methods.</p>
+<p>I’m excited to be moving closer to a modular and JAX-compatible optimization framework that aligns with the goals of QuTiP-QOC and supports robust open-system quantum control.</p>
 
 
+</section>
+</section>
 </section>
 
 </main> <!-- /main -->
