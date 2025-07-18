@@ -159,8 +159,7 @@ ul.task-list li input[type="checkbox"] {
 <h4 class="anchored" data-anchor-id="pr-for-logging-cleanup"><strong>1. PR for Logging Cleanup</strong></h4>
 <p>I raised a draft PR for the <strong>merge_qtrl</strong> branch, which includes the logging cleanup work I did last week:<br>
 - Removed QTRL-specific logging from <code>_grape.py</code> and <code>_crab.py</code>.<br>
-- Eliminated all <code>qutip_qtrl.logging_utils</code> imports, <code>logger = logging.get_logger()</code>, and <code>logger.debug(...)</code> calls.<br>
-- Preserved all functional code tied to <code>self._qtrl.stats</code>, <code>self._qtrl.iter_summary</code>, and <code>self._qtrl.dump</code>.</p>
+- Eliminated all <code>qutip_qtrl.logging_utils</code> imports, <code>logger = logging.get_logger()</code>, and <code>logger.debug(...)</code> calls.</p>
 <p>Additionally, I created a temporary <code>test_grape.py</code> in the <code>q2/</code> folder as a quick smoke test to verify <code>grape_unitary()</code> runs without errors and returns a final unitary <code>U_f</code> of type <code>Qobj</code>.<br>
 This was only for debugging import issues in <code>q2/grape.py</code> and will be removed in the next commit if not needed.</p>
 <p>I also <strong>cherry-picked the key comments from PR #47</strong> into this new PR to ensure that prior review feedback was retained.</p>
