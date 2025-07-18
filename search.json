@@ -21,6 +21,13 @@
     "text": "Why this project matters?\nQuantum optimal control plays a critical role in manipulating quantum systems with high precision, which is essential for quantum computing, sensing, and communication technologies. By improving QuTiP-QOC’s algorithms and modularizing fidelity computations, this project will help researchers and developers design and analyze quantum control sequences more efficiently.\nThe enhanced fidelity system will provide a flexible, maintainable foundation for future algorithm development and integration with high-performance computing tools. Ultimately, this project will contribute to accelerating advancements in quantum computing by enabling more precise and accessible quantum control solutions.\n\nStay tuned for weekly updates on my journey through this exciting project. I look forward to sharing what I learn and build over the summer!"
   },
   {
+    "objectID": "posts/Coding week 8/index.html",
+    "href": "posts/Coding week 8/index.html",
+    "title": "Week 8",
+    "section": "",
+    "text": "GRAPE Logging Cleanup\nThis week, I made progress on the QTRL-to-QOC migration.\n\n1. PR for Logging Cleanup\nI raised a draft PR for the merge_qtrl branch, which includes the logging cleanup work I did last week:\n- Removed QTRL-specific logging from _grape.py and _crab.py.\n- Eliminated all qutip_qtrl.logging_utils imports, logger = logging.get_logger(), and logger.debug(...) calls.\n- Preserved all functional code tied to self._qtrl.stats, self._qtrl.iter_summary, and self._qtrl.dump.\nAdditionally, I created a temporary test_grape.py in the q2/ folder as a quick smoke test to verify grape_unitary() runs without errors and returns a final unitary U_f of type Qobj.\nThis was only for debugging import issues in q2/grape.py and will be removed in the next commit if not needed.\nI also cherry-picked the key comments from PR #47 into this new PR to ensure that prior review feedback was retained.\n\n\n\n2. Fidelity Measures Investigation (#46)\nI explored the relationship between fidelity measures in QTRL vs. QuTiP.\n- Produced a plot by varying the collapse operator (c_op) rate and visualized the differences between the two fidelity definitions.\n- Shared the plot and initial findings on Discord for feedback.\n\n\n\n3. Issue #47 Updates\n\nAdded a comment on #47 explaining the fix for the TRACEDIFF infidelity mismatch and the approach taken.\n\nPosted updates on the main Discord channel to keep everyone informed."
+  },
+  {
     "objectID": "posts/Coding week 6/index.html",
     "href": "posts/Coding week 6/index.html",
     "title": "Week 6",
@@ -95,7 +102,7 @@
     "href": "index.html",
     "title": "GSOC25-QUTIP-QOC-JOURNEY",
     "section": "",
-    "text": "Week 6\n\n\n\n\n\n\n\n\nJul 8, 2025\n\n\nAkhil Pratap Singh\n\n\n\n\n\n\n\n\n\n\n\n\nWeek 5\n\n\n\n\n\n\n\n\nJul 1, 2025\n\n\nAkhil Pratap Singh\n\n\n\n\n\n\n\n\n\n\n\n\nWeek 4\n\n\n\n\n\n\n\n\nJun 24, 2025\n\n\nAkhil Pratap Singh\n\n\n\n\n\n\n\n\n\n\n\n\nWeek 3: Fixing Dimension Mismatch and Investigating GRAPE Fidelity Issues\n\n\n\n\n\n\n\n\nJun 17, 2025\n\n\nAkhil Pratap Singh\n\n\n\n\n\n\n\n\n\n\n\n\nWeek#2\n\n\n\n\n\n\n\n\nJun 10, 2025\n\n\nAkhil Pratap Singh\n\n\n\n\n\n\n\n\n\n\n\n\nCoding Begins! Week#1\n\n\n\n\n\n\n\n\nJun 5, 2025\n\n\nAkhil Pratap Singh\n\n\n\n\n\n\n\n\n\n\n\n\nBefore-Coding-Begins\n\n\n\n\n\n\n\n\nMay 27, 2025\n\n\nAkhil Pratap Singh\n\n\n\n\n\n\n\n\n\n\n\n\nCommunity Bonding and Initial Contributions\n\n\n\n\n\n\n\n\nMay 16, 2025\n\n\nAkhil Pratap Singh\n\n\n\n\n\n\n\n\n\n\n\n\nExcited to Join GSoC 2025 with QuTiP-QOC!\n\n\n\n\n\n\n\n\nMay 9, 2025\n\n\nAkhil Pratap Singh\n\n\n\n\n\nNo matching items"
+    "text": "Week 8\n\n\n\n\n\n\n\n\nJul 22, 2025\n\n\nAkhil Pratap Singh\n\n\n\n\n\n\n\n\n\n\n\n\nWeek 7\n\n\n\n\n\n\n\n\nJul 15, 2025\n\n\nAkhil Pratap Singh\n\n\n\n\n\n\n\n\n\n\n\n\nWeek 6\n\n\n\n\n\n\n\n\nJul 8, 2025\n\n\nAkhil Pratap Singh\n\n\n\n\n\n\n\n\n\n\n\n\nWeek 5\n\n\n\n\n\n\n\n\nJul 1, 2025\n\n\nAkhil Pratap Singh\n\n\n\n\n\n\n\n\n\n\n\n\nWeek 4\n\n\n\n\n\n\n\n\nJun 24, 2025\n\n\nAkhil Pratap Singh\n\n\n\n\n\n\n\n\n\n\n\n\nWeek 3: Fixing Dimension Mismatch and Investigating GRAPE Fidelity Issues\n\n\n\n\n\n\n\n\nJun 17, 2025\n\n\nAkhil Pratap Singh\n\n\n\n\n\n\n\n\n\n\n\n\nWeek#2\n\n\n\n\n\n\n\n\nJun 10, 2025\n\n\nAkhil Pratap Singh\n\n\n\n\n\n\n\n\n\n\n\n\nCoding Begins! Week#1\n\n\n\n\n\n\n\n\nJun 5, 2025\n\n\nAkhil Pratap Singh\n\n\n\n\n\n\n\n\n\n\n\n\nBefore-Coding-Begins\n\n\n\n\n\n\n\n\nMay 27, 2025\n\n\nAkhil Pratap Singh\n\n\n\n\n\n\n\n\n\n\n\n\nCommunity Bonding and Initial Contributions\n\n\n\n\n\n\n\n\nMay 16, 2025\n\n\nAkhil Pratap Singh\n\n\n\n\n\n\n\n\n\n\n\n\nExcited to Join GSoC 2025 with QuTiP-QOC!\n\n\n\n\n\n\n\n\nMay 9, 2025\n\n\nAkhil Pratap Singh\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "posts/Coding Begins week 1/index.html",
@@ -138,6 +145,41 @@
     "title": "Week 5",
     "section": "Step 2: Analyzing _grape.py in QOC",
     "text": "Step 2: Analyzing _grape.py in QOC\nI explored the existing _grape.py file in QOC, which provides a GRAPE interface but still relies on QTRL’s Optimizer class. It wraps .infidelity() and .gradient() methods but accesses fid_computer and control amplitudes indirectly via self._qtrl, a deeply coupled structure.\n\nStep 3: Initial Cleanup — Removed QTRL Logging\nFollowing Boxi’s suggestion, I began the refactoring by removing the QTRL-specific logging setup from _grape.py.\nThis included:\n\nRemoving import qutip_qtrl.logging_utils as logging\nRemoving logger = logging.get_logger()\nDeleting all logger.debug(...) lines and if self._qtrl.log_level &lt;= logging.DEBUG: checks\n\nI did not touch the rest of the code structure — everything else like self._qtrl.stats, self._qtrl.dump, and self._qtrl.iter_summary was left intact.\nAfter this cleanup, I reran the tests to confirm that removing logging had no effect on core functionality. All tests passed, indicating it was safe to proceed with further modularization later.\n\nI’m excited to be moving closer to a modular and JAX-compatible optimization framework that aligns with the goals of QuTiP-QOC and supports robust open-system quantum control."
+  },
+  {
+    "objectID": "posts/Coding week 7/index.html",
+    "href": "posts/Coding week 7/index.html",
+    "title": "Week 7",
+    "section": "",
+    "text": "This week, I made substantial progress on two fronts: migrating the GRAPE and CRAB optimizers to native QOC-style implementations, and continuing the fidelity mismatch investigation in GRAPE for open systems (Issue #46).\n\n\n\nI refactored legacy code in src/qutip_qoc/_grape.py and src/qutip_qoc/_crab.py to eliminate their reliance on qutip_qtrl.\n\n\n\nRemoved all use of self._qtrl, including:\n\n_get_ctrl_amps()\ndynamics.update_ctrl_amps()\ndynamics.fid_computer.get_fid_err() and .get_fid_err_gradient()\n\nRewrote the class to accept a config-driven constructor using fields from GRAPEConfig.\nReplaced fidelity and gradient calls with native FidelityComputer logic.\nPreserved QTRL’s compact amplitude reshaping logic:\n\namps = args[0].copy().reshape(self._n_ts, self._n_ctrls)\n\n\n\n\nReplaced the legacy self._qtrl object with modular QOC components.\nUpdated the infidelity() method to use FidelityComputer.\nSet self.gradient = None since CRAB is gradient-free.\n\n\n\n\nAfter the refactor, I ran the full test suite and all tests passed, confirming functional correctness. These updates push QOC closer to being fully QTRL-independent while preserving optimizer behavior.\n\n\n\n\n\nI continued investigating Issue #46, where GRAPE reports lower infidelity than what’s seen during manual evolution.\n\n\nGRAPE-reported infidelity:     0.00155\nManual Liouville infidelity:   0.00636\nThis suggests that GRAPE (in its QTRL form) may still be using a fidelity expression suited for pure states or closed systems, despite the test running under Liouvillian dynamics.\n\n\n\n\n\nI attempted a number of adjustments:\n\nReplacing self._qtrl.dynamics.fid_computer with a patched one\nOverriding fid_err_func_wrapper and _fid_err_func\nInjecting JAX-compatible logic like:\n\njnp.trace(diff.dag().data._jxa @ diff.data._jxa)\n\nManually writing infidelity expressions like:\n\nnp.trace((target - final).dag().full() @ (target - final).full())\nBut the reported vs. actual fidelity still didn’t match — which makes me think either my changes weren’t properly picked up by the optimizer, or QTRL caches the fidelity function internally.\n\n\n\n\nWhat I Think:\n\nGRAPE might still call a fidelity expression designed for pure states, even when the system is clearly open.\nQTRL may select fidelity logic based on system type, but it’s unclear if it fully adapts to Liouville space.\nThe root may lie in how FidelityComputer or GRAPE’s internals check for dyn_type or operator shapes — this needs deeper tracing."
+  },
+  {
+    "objectID": "posts/Coding week 7/index.html#qtrl-to-qoc-migration-grape-crab-refactor",
+    "href": "posts/Coding week 7/index.html#qtrl-to-qoc-migration-grape-crab-refactor",
+    "title": "Week 7",
+    "section": "",
+    "text": "I refactored legacy code in src/qutip_qoc/_grape.py and src/qutip_qoc/_crab.py to eliminate their reliance on qutip_qtrl.\n\n\n\nRemoved all use of self._qtrl, including:\n\n_get_ctrl_amps()\ndynamics.update_ctrl_amps()\ndynamics.fid_computer.get_fid_err() and .get_fid_err_gradient()\n\nRewrote the class to accept a config-driven constructor using fields from GRAPEConfig.\nReplaced fidelity and gradient calls with native FidelityComputer logic.\nPreserved QTRL’s compact amplitude reshaping logic:\n\namps = args[0].copy().reshape(self._n_ts, self._n_ctrls)\n\n\n\n\nReplaced the legacy self._qtrl object with modular QOC components.\nUpdated the infidelity() method to use FidelityComputer.\nSet self.gradient = None since CRAB is gradient-free.\n\n\n\n\nAfter the refactor, I ran the full test suite and all tests passed, confirming functional correctness. These updates push QOC closer to being fully QTRL-independent while preserving optimizer behavior."
+  },
+  {
+    "objectID": "posts/Coding week 7/index.html#ongoing-work-grape-infidelity-mismatch-in-open-systems-46",
+    "href": "posts/Coding week 7/index.html#ongoing-work-grape-infidelity-mismatch-in-open-systems-46",
+    "title": "Week 7",
+    "section": "",
+    "text": "I continued investigating Issue #46, where GRAPE reports lower infidelity than what’s seen during manual evolution.\n\n\nGRAPE-reported infidelity:     0.00155\nManual Liouville infidelity:   0.00636\nThis suggests that GRAPE (in its QTRL form) may still be using a fidelity expression suited for pure states or closed systems, despite the test running under Liouvillian dynamics."
+  },
+  {
+    "objectID": "posts/Coding week 7/index.html#things-i-tried-not-fully-sure-if-effective",
+    "href": "posts/Coding week 7/index.html#things-i-tried-not-fully-sure-if-effective",
+    "title": "Week 7",
+    "section": "",
+    "text": "I attempted a number of adjustments:\n\nReplacing self._qtrl.dynamics.fid_computer with a patched one\nOverriding fid_err_func_wrapper and _fid_err_func\nInjecting JAX-compatible logic like:\n\njnp.trace(diff.dag().data._jxa @ diff.data._jxa)\n\nManually writing infidelity expressions like:\n\nnp.trace((target - final).dag().full() @ (target - final).full())\nBut the reported vs. actual fidelity still didn’t match — which makes me think either my changes weren’t properly picked up by the optimizer, or QTRL caches the fidelity function internally."
+  },
+  {
+    "objectID": "posts/Coding week 7/index.html#what-i-suspect",
+    "href": "posts/Coding week 7/index.html#what-i-suspect",
+    "title": "Week 7",
+    "section": "",
+    "text": "What I Think:\n\nGRAPE might still call a fidelity expression designed for pure states, even when the system is clearly open.\nQTRL may select fidelity logic based on system type, but it’s unclear if it fully adapts to Liouville space.\nThe root may lie in how FidelityComputer or GRAPE’s internals check for dyn_type or operator shapes — this needs deeper tracing."
   },
   {
     "objectID": "posts/community-bond/index.html",
