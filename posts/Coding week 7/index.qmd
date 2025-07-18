@@ -1,0 +1,103 @@
+---
+title: "Week 7"
+author: "Akhil Pratap Singh"
+date: "2025-07-15"
+categories: [gsoc, qutip, qutip-qoc]
+---
+
+# What did I do this week?
+
+This week, I made substantial progress on two fronts: migrating the GRAPE and CRAB optimizers to native QOC-style implementations, and continuing the fidelity mismatch investigation in GRAPE for open systems (Issue #46).
+
+---
+
+## QTRL-to-QOC Migration: GRAPE & CRAB Refactor
+
+I refactored legacy code in `src/qutip_qoc/_grape.py` and `src/qutip_qoc/_crab.py` to eliminate their reliance on `qutip_qtrl`.
+
+### GRAPE Refactor Highlights:
+
+- Removed all use of `self._qtrl`, including:
+  - `_get_ctrl_amps()`
+  - `dynamics.update_ctrl_amps()`
+  - `dynamics.fid_computer.get_fid_err()` and `.get_fid_err_gradient()`
+- Rewrote the class to accept a config-driven constructor using fields from `GRAPEConfig`.
+- Replaced fidelity and gradient calls with native `FidelityComputer` logic.
+- Preserved QTRL’s compact amplitude reshaping logic:
+
+```python
+amps = args[0].copy().reshape(self._n_ts, self._n_ctrls)
+```
+
+### CRAB Refactor Highlights:
+
+- Replaced the legacy `self._qtrl` object with modular QOC components.
+- Updated the `infidelity()` method to use `FidelityComputer`.
+- Set `self.gradient = None` since CRAB is gradient-free.
+
+### Testing
+
+After the refactor, I ran the full test suite and **all tests passed**, confirming functional correctness. These updates push QOC closer to being fully QTRL-independent while preserving optimizer behavior.
+
+---
+
+## Ongoing Work: GRAPE Infidelity Mismatch in Open Systems (#46)
+
+I continued investigating [Issue #46](https://github.com/qutip/qutip-qoc/issues/46), where GRAPE reports lower infidelity than what's seen during manual evolution.
+
+### What I Observed:
+
+```yaml
+GRAPE-reported infidelity:     0.00155
+Manual Liouville infidelity:   0.00636
+```
+
+This suggests that GRAPE (in its QTRL form) may still be using a fidelity expression suited for **pure states** or **closed systems**, despite the test running under **Liouvillian dynamics**.
+
+---
+
+## Things I Tried (Not Fully Sure If Effective)
+
+I attempted a number of adjustments:
+
+- Replacing `self._qtrl.dynamics.fid_computer` with a patched one
+- Overriding `fid_err_func_wrapper` and `_fid_err_func`
+- Injecting JAX-compatible logic like:
+
+```python
+jnp.trace(diff.dag().data._jxa @ diff.data._jxa)
+```
+
+- Manually writing infidelity expressions like:
+
+```python
+np.trace((target - final).dag().full() @ (target - final).full())
+```
+
+But the reported vs. actual fidelity still didn’t match — which makes me think either my changes weren’t properly picked up by the optimizer, or QTRL caches the fidelity function internally.
+
+---
+
+## What I Suspect
+
+What I Think:
+
+- GRAPE might still call a fidelity expression designed for **pure states**, even when the system is clearly open.
+- QTRL may select fidelity logic based on system type, but it’s unclear if it fully adapts to Liouville space.
+- The root may lie in how `FidelityComputer` or GRAPE’s internals check for dyn_type or operator shapes — this needs deeper tracing.
+
+---
+
+# Plan for Next Week
+
+- Add comment on  #47 about how fixed
+- Investigate relationship between the fidelity measures (Qtrl vs qutip) mentioned in #46. Produce a plot and share on Discord, varying c_op rate.
+- Make draft PR for the merge into merge_qtrl branch, remember to cherry-pick the comments of PR 47.
+- Keep us updated on Discord.
+- Investigate if `config.dyn_type` or `fid_err_func_wrapper` needs to be restructured for proper fidelity computation
+- Try directly patching QTRL logic if no public hook exists for fidelity overrides
+- Continue unifying optimizer logic in QOC
+
+---
+
+I'm excited to be getting closer to a truly modular and QTRL-free GRAPE implementation, while untangling subtle fidelity mismatches that affect trust in open-system optimization results.

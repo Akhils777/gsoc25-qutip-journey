@@ -1,0 +1,34 @@
+---
+title: "Week 8"
+author: "Akhil Pratap Singh"
+date: "2025-07-22"
+categories: [gsoc, qutip, qutip-qoc]
+---
+
+### GRAPE Logging Cleanup  
+
+This week, I made progress on the QTRL-to-QOC migration.
+
+#### **1. PR for Logging Cleanup**  
+I raised a draft PR for the **merge_qtrl** branch, which includes the logging cleanup work I did last week:  
+- Removed QTRL-specific logging from `_grape.py` and `_crab.py`.  
+- Eliminated all `qutip_qtrl.logging_utils` imports, `logger = logging.get_logger()`, and `logger.debug(...)` calls.  
+
+Additionally, I created a temporary `test_grape.py` in the `q2/` folder as a quick smoke test to verify `grape_unitary()` runs without errors and returns a final unitary `U_f` of type `Qobj`.  
+This was only for debugging import issues in `q2/grape.py` and will be removed in the next commit if not needed.
+
+
+I also **cherry-picked the key comments from PR #47** into this new PR to ensure that prior review feedback was retained.
+
+---
+
+#### **2. Fidelity Measures Investigation (#46)**  
+I explored the **relationship between fidelity measures in QTRL vs. QuTiP**.  
+- Produced a plot by **varying the collapse operator (c_op) rate** and visualized the differences between the two fidelity definitions.  
+- Shared the plot and initial findings on Discord for feedback.  
+
+---
+
+#### **3. Issue #47 Updates**  
+- Added a comment on **#47** explaining the fix for the TRACEDIFF infidelity mismatch and the approach taken.  
+- Posted updates on the main Discord channel to keep everyone informed.
